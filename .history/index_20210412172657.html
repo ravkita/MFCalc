@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+</head>
+<body>
+    <p class="title">Rata kapitałowa w n-tej kwocie płatności </p>
+    <form action="" id="rata">
+        <label for="S">S:</label> <input type="number" name="S" class="s">
+        <label for="r">r:</label> <input type="number" name="r" class="r">
+        <label for="m">m:</label> <input type="number" name="m" class="m">
+        <label for="N">N:</label> <input type="number" name="N" class="N">
+        <input type="button" name="confirm" id="confirm" value="zatwierdź">
+    </form>
+    <div class="result">
+
+    </div>
+    <script type="text/javascript">
+        let s;
+        let r;
+        let m;
+        let N;
+        let q;
+        function rataZmienna(){
+            let tn = [];
+                for(let i = 1; i<=N; i++){
+                    const el = document.createElement("p");
+                    tn[i-1] = s*((Math.pow(q, i) - Math.pow(q, i-1))/(Math.pow(q, m*N) - 1));
+                    el.innerText = `T${i}: ${tn[i-1]}`;
+                    document.querySelector('.result').appendChild(el);
+                }
+        }
+        function kwotaPlatnosciStala(){
+            const el = document.createElement("p");
+            let a = s*Math.pow(q, m*N)*((q-1)/(Math.pow(q, m*N)-1));
+            el.innerText = `A: ${a}`;
+            document.querySelector('.result').appendChild(el);
+        }
+        function kwotaPlatnosciZmienna(){
+            for(let i = 1; i<=N; i++){
+                const el = document.createElement("p");
+                let an = (s/N)*[1+(N-i+1)*r];
+                el.innerText = `A${i}: ${an}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function getData(){
+            document.getElementById('confirm').addEventListener('click', (e) =>{
+                s = document.querySelector('.s').value;
+                r = document.querySelector('.r').value;
+                m = document.querySelector('.m').value;
+                N = document.querySelector('.N').value;
+                q = 1+(r/m);
+                // rataZmienna();
+                // kwotaPlatnosciStala();
+                kwotaPlatnosciZmienna();
+            });
+        }
+        getData();
+    </script>
+</body>
+</html>

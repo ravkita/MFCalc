@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+
+    <style type="text/css">
+        body{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            background-image: url('bg.jpg');
+            width: 100vw;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .popout{
+            width: 80%;
+            height: 100%;
+            position: relative;
+        }
+        .popout .bg{
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.35);
+            filter: blur(2.55px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .header{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .title{
+            color: #222;
+            margin-top: 50px;
+            margin-bottom: 10px;
+        }
+        .subtitle{
+            margin-top: 10px;
+            color: #1A0B34;
+        }
+
+        #form{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .formItem{
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        select, input[type="number"]{
+            width: calc(100vh/2 - 100px);
+            outline: 0;
+            border: 0;
+            background: rgba(201, 201, 201, 0.8);
+            border-radius: 20px;
+            padding: 5px;
+            color: #3d3d3d;
+        }
+        select:focus, input[type="number"]:focus{
+            box-shadow: 0 4px 10px rgba(201, 201, 201, 0.35);
+        }
+        label{
+            padding-left: 10px;
+            padding-bottom: 5px;
+            color: #1A0B34;
+            font-size: 20px;
+        }
+        input[type="button"]{
+            margin-top: 35px;
+            background: transparent;
+            width: 250px;
+            border: solid 2px #1A0B34;
+            color: #1A0B34;
+            border-radius: 30px;
+            font-size: 20px;;
+            padding: 7.5px 0;
+            font-weight: 600;
+            outline: none;
+            transition: all .3s ease-in;
+        }
+        input[type="button"]:hover{
+            background: #1A0B34;
+            color: #fff;
+            cursor: pointer;
+        }
+        .result{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-flow: row wrap;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+        .cell{
+            width: 47.5%;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.6);
+            margin-top: 25px;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <section class="popout">
+        <div class="bg"></div>
+        <header class="header">
+            <h1 class="title">MATEMATYKA FINANSOWA</h1>
+        <h2 class="subtitle">KALKULATOR</h2>
+        </header>
+        <form action="" id="form">
+            <div class="formItem">
+                <select name="type" id="typ">
+                <option default>Wybierz typ zadania</option>
+                <option value="1">zmienna rata</option>
+                <option value="2">zmienne płatności</option>
+                <option value="3">narastanie kapitału</option>
+            </select>
+            </div>
+            <div class="formItem"><label for="S">S:</label> <input type="number" name="S" class="s"></div>
+            <div class="formItem"><label for="r">r (w postaci 0,0):</label> <input type="number" name="r" class="r"></div>
+            <div class="formItem"><label for="m">m:</label> <input type="number" name="m" class="m"></div>
+            <div class="formItem"><label for="N">N:</label> <input type="number" name="N" class="N"></div>
+            <div class="formItem"><label for="Ko">Ko:</label> <input type="number" name="Ko" class="Ko"></div>
+            <input type="button" name="confirm" id="confirm" value="Licz">
+        </form>
+        <div class="result">
+            <div class="cell cell-1"></div>
+            <div class="cell cell-2"></div>
+            <div class="cell cell-3"></div>
+            <div class="cell cell-4"></div>
+        </div>
+    </section>
+    <script type="text/javascript">
+        let s;
+        let r;
+        let m;
+        let N;
+        let q;
+        let a;
+        let Ko;
+        let Sn = [];
+
+        // RATY
+
+
+        function rataStała(){
+            const el = document.createElement("p");
+            let t = s/(m*N);
+            el.innerText = `T: ${t}`;
+            document.querySelector('.cell-1').appendChild(el);
+        }
+        function rataZmienna(){
+            let tn = [];
+            let sumaTn = 0;
+                for(let i = 1; i<=N*m; i++){
+                    const el = document.createElement("p");
+                    tn[i-1] = s*((Math.pow(q, i) - Math.pow(q, i-1))/(Math.pow(q, m*N) - 1));
+                    sumaTn += tn[i-1];
+                    el.innerText = `T${i}: ${tn[i-1]}`;
+                    document.querySelector('.cell-1').appendChild(el);
+                }
+                const suma = document.createElement("p");
+            suma.innerText = `Suma rat: ${sumaTn}`;
+            document.querySelector('.cell-1').appendChild(suma);
+        }
+
+        //KWOTA PŁATNOŚCI
+
+        function kwotaPlatnosciStala(){
+            const el = document.createElement("p");
+            a = s*Math.pow(q, m*N)*((q-1)/(Math.pow(q, m*N)-1));
+            el.innerText = `A: ${a}`;
+            document.querySelector('.cell-2').appendChild(el);
+        }
+        function kwotaPlatnosciZmienna(){
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let an = (s/(N*m))*[1+((N*m)-i+1)*(r/m)];
+                el.innerText = `A${i}: ${an}`;
+                document.querySelector('.cell-2').appendChild(el);
+            }
+        }
+
+        // ODSETKI
+        function odsetkiPrzyStalejRacie(){
+            let sumaOs = 0;
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let On = s*[1-((i-1)/(N*m))]*(r/m);
+                sumaOs += On;
+                el.innerText = `O${i}: ${On}`;
+                document.querySelector('.cell-3').appendChild(el);
+            }
+            const suma = document.createElement("p");
+            suma.innerText = `Suma odsetek: ${sumaOs}`;
+            document.querySelector('.cell-3').appendChild(suma);
+        }
+
+        function odsetkiPrzyStalejKwocie(){
+            saldoPrzyStałejKwocie();
+            let On
+            let sumaO = 0;
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                if(i === 1){
+                     On = s*(r/m);
+                     sumaO += On;
+                }else{
+                     On = Sn[i-2]*(r/m);
+                     sumaO += On;
+                }
+
+                el.innerText = `O${i}: ${On}`;
+                document.querySelector('.cell-3').appendChild(el);
+            }
+            const suma = document.createElement("p");
+            suma.innerText = `Suma odsetek: ${sumaO}`;
+            document.querySelector('.cell-3').appendChild(suma);
+        }
+
+
+        //SALDO
+        function saldoPrzyStałejKwocie(){
+            kwotaPlatnosciStala();
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                Sn[i-1] = s*(Math.pow((1+(r/m)), i)) - a*((Math.pow((1+(r/m)), i)-1)/((1+(r/m))-1));
+                el.innerText = `S${i}: ${Sn[i-1]}`;
+                document.querySelector('.cell-4').appendChild(el);
+            }
+        }
+
+        function saldoPrzyStałejRacie(){
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let SnS = s*(1-(i/(N*m)));
+                el.innerText = `S${i}: ${SnS}`;
+                document.querySelector('.cell-4').appendChild(el);
+            }
+        }
+
+
+        //NARASTANIE KAPITAŁU
+
+        function narastanieKapitału(){
+            for(let i = 1; i<=N; i++){
+                const el = document.createElement("p");
+                let Kn = Ko*(Math.pow((1+(r/m)), i*m));
+                el.innerText = `K${i}: ${Kn}`;
+                document.querySelector('.cell-1').appendChild(el);
+            }
+        }
+
+
+
+        function getData(){
+            document.getElementById('confirm').addEventListener('click', (e) =>{
+                s = document.querySelector('.s').value;
+                r = document.querySelector('.r').value;
+                m = document.querySelector('.m').value;
+                N = document.querySelector('.N').value;
+                Ko = document.querySelector('.Ko').value;
+                q = 1+(r/m);
+                let type = document.querySelector('#typ').value;
+                document.querySelector('.cell').innerHTML="";
+
+                switch (type){
+                    case "1":
+                    rataZmienna();
+                    kwotaPlatnosciStala();
+                    odsetkiPrzyStalejKwocie()
+                    break;
+                    case "2":
+                    rataStała();
+                    kwotaPlatnosciZmienna();
+                    odsetkiPrzyStalejRacie();
+                    saldoPrzyStałejRacie();
+                    break;
+                    case "3":
+                    narastanieKapitału();
+                    break;
+                    default:
+                        console.log("Error");
+                }
+            });
+        }
+        getData();
+    </script>
+</body>
+</html>

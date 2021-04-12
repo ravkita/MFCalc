@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+
+    <style type="text/css">
+        body{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .header{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .title{
+            color: #222;
+            margin-top: 50px;
+            margin-bottom: 10px;
+        }
+        .subtitle{
+            margin-top: 10px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="title">MATEMATYKA FINANSOWA</h1>
+    <h2 class="subtitle">KALKULATOR</h2>
+    </header>
+    <form action="" id="rata">
+        <label for="S">S:</label> <input type="number" name="S" class="s">
+        <label for="r">r (w postaci 0,0):</label> <input type="number" name="r" class="r">
+        <label for="m">m:</label> <input type="number" name="m" class="m">
+        <label for="N">N:</label> <input type="number" name="N" class="N">
+        <label for="Ko">Ko:</label> <input type="number" name="Ko" class="Ko">
+        <select name="type" id="typ">
+            <option value="1">zmienna rata</option>
+            <option value="2">zmienne płatności</option>
+            <option value="3">narastanie kapitału</option>
+        </select>
+        <input type="button" name="confirm" id="confirm" value="zatwierdź">
+    </form>
+    <div class="result">
+
+    </div>
+    <script type="text/javascript">
+        let s;
+        let r;
+        let m;
+        let N;
+        let q;
+        let a;
+        let Ko;
+        let Sn = [];
+        function rataStała(){
+            const el = document.createElement("p");
+            let t = s/(m*N);
+            el.innerText = `T: ${t}`;
+            document.querySelector('.result').appendChild(el);
+        }
+        function rataZmienna(){
+            let tn = [];
+                for(let i = 1; i<=N*m; i++){
+                    const el = document.createElement("p");
+                    tn[i-1] = s*((Math.pow(q, i) - Math.pow(q, i-1))/(Math.pow(q, m*N) - 1));
+                    el.innerText = `T${i}: ${tn[i-1]}`;
+                    document.querySelector('.result').appendChild(el);
+                }
+        }
+        function kwotaPlatnosciStala(){
+            const el = document.createElement("p");
+            a = s*Math.pow(q, m*N)*((q-1)/(Math.pow(q, m*N)-1));
+            el.innerText = `A: ${a}`;
+            document.querySelector('.result').appendChild(el);
+        }
+        function kwotaPlatnosciZmienna(){
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let an = (s/(N*m))*[1+((N*m)-i+1)*(r/m)];
+                el.innerText = `A${i}: ${an}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function narastanieKapitału(){
+            for(let i = 1; i<=N; i++){
+                const el = document.createElement("p");
+                let Kn = Ko*(Math.pow((1+(r/m)), i*m));
+                el.innerText = `K${i}: ${Kn}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function odsetkiPrzyStalejRacie(){
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let On = s*[1-((i-1)/(N*m))]*(r/m);
+                el.innerText = `O${i}: ${On}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function saldoPrzyStałejKwocie(){
+            kwotaPlatnosciStala();
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                Sn[i-1] = s*(Math.pow((1+(r/m)), i)) - a*((Math.pow((1+(r/m)), i)-1)/((1+(r/m))-1));
+                el.innerText = `S${i}: ${Sn[i-1]}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function odsetkiPrzyStalejKwocie(){
+            for(let i = 1; i<=N*m; i++){
+                const el = document.createElement("p");
+                let On
+
+                if(i === 1){
+                     On = s*(r/m);
+                }else{
+                     On = Sn[i-2]*(r/m);
+                }
+
+                el.innerText = `O${i}: ${On}`;
+                document.querySelector('.result').appendChild(el);
+            }
+        }
+        function getData(){
+            document.getElementById('confirm').addEventListener('click', (e) =>{
+                s = document.querySelector('.s').value;
+                r = document.querySelector('.r').value;
+                m = document.querySelector('.m').value;
+                N = document.querySelector('.N').value;
+                Ko = document.querySelector('.Ko').value;
+                q = 1+(r/m);
+                let type = document.querySelector('#typ').value;
+                document.querySelector('.result').innerHTML="";
+
+                switch (type){
+                    case "1":
+                    rataZmienna();
+                    kwotaPlatnosciStala();
+                    odsetkiPrzyStalejKwocie()
+                    break;
+                    case "2":
+                    kwotaPlatnosciZmienna();
+                    rataStała();
+                    odsetkiPrzyStalejRacie();
+                    break;
+                    case "3":
+                    narastanieKapitału();
+                }
+            });
+        }
+        getData();
+    </script>
+</body>
+</html>

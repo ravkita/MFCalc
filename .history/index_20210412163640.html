@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+</head>
+<body>
+    <p class="title">Rata kapitałowa w n-tej kwocie płatności </p>
+    <form action="" id="rata">
+        <label for="S">S:</label> <input type="number" name="S">
+        <label for="r">r:</label> <input type="number" name="r">
+        <label for="m">m:</label> <input type="number" name="m">
+        <label for="N">N:</label> <input type="number" name="N">
+        <input type="subbmit" name="confirm" id="confirm">
+    </form>
+
+    <script type="text/javascript">
+        function rata(){
+            document.getElementById('confirm').addEventListener('click', (e) =>{
+                e.preventDefault;
+                let s = document.getElementById('rata').s.value;
+                console.log(s);
+            });
+        }
+    </script>
+</body>
+</html>
