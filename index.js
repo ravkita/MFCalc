@@ -1,3 +1,4 @@
+
 let s;
 let r;
 let m;
@@ -40,12 +41,17 @@ function kwotaPlatnosciStala(){
     document.querySelector('.cell-2').appendChild(el);
 }
 function kwotaPlatnosciZmienna(){
+    let sumaAn = 0;
     for(let i = 1; i<=N*m; i++){
         const el = document.createElement("p");
         let an = (s/(N*m))*[1+((N*m)-i+1)*(r/m)];
+        sumaAn += an;
         el.innerText = `A${i}: ${an}`;
         document.querySelector('.cell-2').appendChild(el);
     }
+    const suma = document.createElement("p");
+    suma.innerText = `Suma płatności: ${sumaAn}`;
+    document.querySelector('.cell-2').appendChild(suma);
 }
 
 // ODSETKI
@@ -65,7 +71,7 @@ function odsetkiPrzyStalejRacie(){
 
 function odsetkiPrzyStalejKwocie(){
     saldoPrzyStałejKwocie();
-    let On
+    let On;
     let sumaO = 0;
     for(let i = 1; i<=N*m; i++){
         const el = document.createElement("p");
@@ -121,7 +127,7 @@ function narastanieKapitału(){
 
 
 function getData(){
-    document.getElementById('confirm').addEventListener('click', (e) =>{
+    document.getElementById('confirm').addEventListener('click', () =>{
         s = document.querySelector('.s').value;
         r = document.querySelector('.r').value;
         m = document.querySelector('.m').value;
@@ -129,7 +135,11 @@ function getData(){
         Ko = document.querySelector('.Ko').value;
         q = 1+(r/m);
         let type = document.querySelector('#typ').value;
-        document.querySelector('.cell').innerHTML="";
+        const cells = document.querySelectorAll('.cell');
+
+        cells.forEach((el)=>{
+            el.innerHTML="";
+        });
 
         switch (type){
             case "1":
